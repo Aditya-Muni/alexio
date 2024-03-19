@@ -1,13 +1,20 @@
 import TypeIt from "typeit-react";
+import { useAlexio } from "../Context";
 
 const TypingAnimation = () => {
+  const user = useAlexio();
+  if (!user.userData) {
+    return <div></div>;
+  }
+  const title = user.userData.user.about.title;
+  console.log(title);
   return (
     <span className="type-it">
       <TypeIt
         options={{
           speed: 200,
           loop: true,
-          strings: ["Designer", "Developer"],
+          strings: [title],
           breakLines: false,
         }}
       />

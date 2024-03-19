@@ -1,66 +1,37 @@
 import Slider from "react-slick";
 import { sliderProps } from "../sliderProps";
+import { useAlexio } from "../Context";
+
 const Testimonials = () => {
+  const user = useAlexio();
+
+  if (!user.userData) {
+    return <div></div>;
+  }
+
+  const testimonials = user.userData.user.testimonials;
   return (
     <div className="testimonial-section m-30px-t sm-m-20px-t pb-5">
       <div className="sub-title m-30px-b">
         <h2 className="dark-color theme-after">What People Say?</h2>
       </div>
       <Slider {...sliderProps.testimonial} id="client-slider-single">
-        <div className="testimonial-col">
-          <div className="say">
-            <p>
-              Lorem Ipsum is simply dummy text of the printing and typesetting
-              industry. Lorem Ipsum has been the industry's standard dummy text
-              ever since the 1500s.
-            </p>
-          </div>
-          <div className="user">
-            <div className="img">
-              <img src="static/img/avtar1.jpg" alt title />
+        {testimonials.map((testimonial, index) => (
+          <div className="testimonial-col" key={index}>
+            <div className="say">
+              <p>{testimonial.review}</p>
             </div>
-            <div className="name ml-2">
-              <span>Jennifer Lutheran</span>
-              <label>CEO</label>
+            <div className="user">
+              <div className="img">
+                <img src={testimonial.image.url} alt title />
+              </div>
+              <div className="name ml-2">
+                <span>{testimonial.name}</span>
+                <label>{testimonial.position}</label>
+              </div>
             </div>
           </div>
-        </div>
-        <div className="testimonial-col">
-          <div className="say">
-            <p>
-              Lorem Ipsum is simply dummy text of the printing and typesetting
-              industry. Lorem Ipsum has been the industry's standard dummy text
-              ever since the 1500s.
-            </p>
-          </div>
-          <div className="user">
-            <div className="img">
-              <img src="static/img/avtar1.jpg" alt title />
-            </div>
-            <div className="name ml-2">
-              <span>Salma Hayek</span>
-              <label>CEO</label>
-            </div>
-          </div>
-        </div>
-        <div className="testimonial-col">
-          <div className="say">
-            <p>
-              Lorem Ipsum is simply dummy text of the printing and typesetting
-              industry. Lorem Ipsum has been the industry's standard dummy text
-              ever since the 1500s.
-            </p>
-          </div>
-          <div className="user">
-            <div className="img">
-              <img src="static/img/avtar1.jpg" alt title />
-            </div>
-            <div className="name ml-2">
-              <span>Martin Lutheran</span>
-              <label>CEO</label>
-            </div>
-          </div>
-        </div>
+        ))}
       </Slider>{" "}
     </div>
   );

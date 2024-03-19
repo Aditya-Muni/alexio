@@ -5,6 +5,7 @@ const ImgViews = ({ close, src }) => {
   let domNode = useClickOutside(() => {
     close(false);
   });
+
   return (
     <Fragment>
       <div className="mfp-bg mfp-ready" onClick={() => close(false)}></div>
@@ -36,7 +37,7 @@ const ImageView = () => {
     setTimeout(() => {
       const a = document.querySelectorAll("a");
       a.forEach((a) => {
-        if (a.href.includes("static/img/")) {
+        if (a.href.includes("https://")) {
           if (a.getAttribute("download") === null) {
             a.addEventListener("click", (e) => {
               e.preventDefault();

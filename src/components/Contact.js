@@ -1,6 +1,7 @@
 import emailjs from "emailjs-com";
 import { useState } from "react";
 import SectionContainer from "./SectionContainer";
+import { useAlexio } from "../Context";
 
 const Contact = () => {
   const [mailData, setMailData] = useState({
@@ -42,12 +43,16 @@ const Contact = () => {
         );
     }
   };
+  const user = useAlexio();
+  if (!user.userData) {
+    return <div></div>;
+  }
   return (
     <SectionContainer
       name={"contact"}
       title="CONTACT ME"
       subTitle={"GET IN TOUCH"}
-      leftImage="static/img/title-4.jpg"
+      leftImage={user.userData.user.about.avatar.url}
     >
       <div className="row">
         <div className="col-lg-12 m-30px-b sm-m-15px-b">
@@ -124,31 +129,22 @@ const Contact = () => {
         <div className="col-md-4 m-15px-tb">
           <div className="contact-info">
             <i className="theme-color ti-location-pin" />
-            <h6 className="dark-color font-alt">Our Address</h6>
-            <p>123 Stree New York City , USA 750065.</p>
+            <h6 className="dark-color font-alt"> Address</h6>
+            <p>{user.userData.user.about.address}</p>
           </div>
         </div>
         <div className="col-md-4 m-15px-tb">
           <div className="contact-info">
             <i className="theme-color ti-mobile" />
-            <h6 className="dark-color font-alt">Our Phone</h6>
-            <p>
-              Office: +004 444 444
-              <br />
-              Office: +004 444 444
-              <br />
-            </p>
+            <h6 className="dark-color font-alt"> Phone</h6>
+            <p>{user.userData.user.about.phoneNumber}</p>
           </div>
         </div>
         <div className="col-md-4 m-15px-tb sm-m-0px-b">
           <div className="contact-info">
             <i className="theme-color ti-email" />
-            <h6 className="dark-color font-alt">Our Email</h6>
-            <p>
-              info@domain.com
-              <br />
-              contact@domain.com
-            </p>
+            <h6 className="dark-color font-alt"> Email</h6>
+            <p>{user.userData.user.email}</p>
           </div>
         </div>
       </div>
