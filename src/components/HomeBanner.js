@@ -34,7 +34,7 @@ const HomeBanner = () => {
                   <div className="home-text">
                     <h6 className="dark-color theme-after">Hello, There</h6>
                     <h1 className="dark-color blue-after">
-                      I'm {user.userData.user.about.name}
+                      I&apos;m {user.userData.user.about.name}
                     </h1>
                     <p>
                       <TypingAnimation />
