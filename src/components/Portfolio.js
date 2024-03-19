@@ -117,7 +117,7 @@ const Portfolio = () => {
               >
                 <div className="portfolio-col portfolio-hover-01">
                   <div className="portfolio-img">
-                    <a href="#">
+                    <a href={project.image.url}>
                       <img src={project.image.url} title alt />
                     </a>
                     <div className="hover">
