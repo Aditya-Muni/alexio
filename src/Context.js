@@ -1,4 +1,3 @@
-import axios from "axios";
 import {
   createContext,
   useCallback,
@@ -67,6 +66,7 @@ const AlexioState = ({ children }) => {
     }
 
     fetchUser();
+    console.log("api called");
   }, []);
 
   const changeNav = useCallback((value, toggleValue) => {

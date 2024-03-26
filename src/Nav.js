@@ -82,6 +82,14 @@ const Nav = () => {
       <div className="pages-nav__item">
         <a
           className="link link--page"
+          onClick={() => changeNav("testimonial", false)}
+        >
+          Testimonials
+        </a>
+      </div>
+      <div className="pages-nav__item">
+        <a
+          className="link link--page"
           onClick={() => changeNav("contact", false)}
         >
           Contact Me

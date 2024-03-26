@@ -7,9 +7,10 @@ import Header from "@/src/Header";
 import Nav from "@/src/Nav";
 import { Fragment, useContext, useEffect } from "react";
 
-import ImageView from "@/src/components/popup/ImageView";
-import VideoPopup from "@/src/components/popup/VideoPopup";
+// import ImageView from "@/src/components/popup/ImageView";
+// import VideoPopup from "@/src/components/popup/VideoPopup";
 import dynamic from "next/dynamic";
+import Testimonials from "@/src/components/Testimonials";
 const Portfolio = dynamic(() => import("@/src/components/Portfolio"), {
   ssr: false,
 });
@@ -24,14 +25,15 @@ const Index = () => {
 
   return (
     <Fragment>
-      <VideoPopup />
-      <ImageView />
+      {/* <VideoPopup />
+      <ImageView /> */}
       <Nav />
       <div className={`pages-stack ${toggle ? "pages-stack--open" : ""}`}>
         <HomeBanner />
         <AboutUs />
         <Services />
         <Portfolio />
+        <Testimonials />
         <Contact />
       </div>
       <Header />

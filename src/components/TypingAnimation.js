@@ -7,7 +7,6 @@ const TypingAnimation = () => {
     return <div></div>;
   }
   const title = user.userData.user.about.title;
-  console.log(title);
   return (
     <span className="type-it">
       <TypeIt

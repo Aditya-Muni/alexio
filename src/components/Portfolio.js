@@ -1,8 +1,8 @@
 import Isotope from "isotope-layout";
 import { useCallback, useEffect, useRef, useState } from "react";
 import SectionContainer from "./SectionContainer";
-import Testimonials from "./Testimonials";
 import { useAlexio } from "../Context";
+import Modal from "./Modal";
 
 const Portfolio = () => {
   const user = useAlexio();
@@ -10,16 +10,18 @@ const Portfolio = () => {
   // Isotope
   const isotope = useRef();
   const [filterKey, setFilterKey] = useState("*");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [projectsPerPage] = useState(2);
+  const [selectedProject, setSelectedProject] = useState(null);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     if (user.userData) {
-      const imagesLoaded = require("imagesloaded");
-      imagesLoaded(
-        document.querySelector(".portfolio-cols"),
-        function (instance) {
+      import("imagesloaded").then((module) => {
+        const imagesLoaded = module.default;
+        imagesLoaded(document.querySelector(".portfolio-cols"), function () {
           isotope.current = new Isotope(".portfolio-cols", {
             itemSelector: ".portfolio-item",
-            layoutMode: "fitRows",
             percentPosition: true,
             masonry: {
               columnWidth: ".portfolio-item",
@@ -30,8 +32,8 @@ const Portfolio = () => {
               queue: false,
             },
           });
-        }
-      );
+        });
+      });
     }
   }, [user.userData]);
 
@@ -46,6 +48,7 @@ const Portfolio = () => {
   const handleFilterKeyChange = useCallback(
     (key) => () => {
       setFilterKey(key);
+      setCurrentPage(1);
     },
     []
   );
@@ -53,11 +56,37 @@ const Portfolio = () => {
   const activeBtn = (value) => (value === filterKey ? "active" : "");
 
   if (!user.userData) {
-    return <div>loading..</div>;
+    return <div></div>;
   }
   const projects = user.userData.user.projects.sort(
     (a, b) => a.sequence - b.sequence
   );
+
+  const indexOfLastProject = currentPage * projectsPerPage;
+  const indexOfFirstProject = indexOfLastProject - projectsPerPage;
+  let currentProjects = projects.slice(indexOfFirstProject, indexOfLastProject);
+
+  if (
+    currentPage === Math.ceil(projects.length / projectsPerPage) &&
+    projects.length % projectsPerPage === 1
+  ) {
+    currentProjects = projects.slice(
+      indexOfFirstProject - 1,
+      indexOfLastProject - 1
+    );
+  }
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  const openModal = (project) => {
+    setSelectedProject(project);
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+  };
+
   return (
     <SectionContainer
       name={"portfolio"}
@@ -68,27 +97,26 @@ const Portfolio = () => {
       <div className="portfolio-section">
         <div className="portfolio-filter m-10px-b">
           <ul className="filter text-left text-md-center">
-            {" "}
             <li
               className={`${activeBtn("*")} theme-after`}
               onClick={handleFilterKeyChange("*")}
             >
               All
-            </li>{" "}
+            </li>
             <li
               className={`${activeBtn("tailwindcss")} theme-after`}
               onClick={handleFilterKeyChange("tailwindcss")}
               data-filter=".tailwindcss"
             >
               tailwind
-            </li>{" "}
+            </li>
             <li
               className={`${activeBtn("nextjs")} theme-after`}
               onClick={handleFilterKeyChange("nextjs")}
               data-filter=".nextjs"
             >
               Nextjs
-            </li>{" "}
+            </li>
             <li
               className={`${activeBtn("reactjs")} theme-after`}
               onClick={handleFilterKeyChange("reactjs")}
@@ -104,68 +132,72 @@ const Portfolio = () => {
               CSS
             </li>
           </ul>
-        </div>{" "}
-        {/* Portfolio Filter */}
+        </div>
         <div className="portfolio-content">
-          <ul className="portfolio-cols portfolio-cols-3">
-            {projects.map((project, index) => (
+          <ul className="portfolio-cols portfolio-cols-2">
+            {currentProjects.map((project, index) => (
               <li
-                className={`portfolio-item website ${project.techStack
+                className={`portfolio-item website portfolio-hover-01 my-2 project-list ${project.techStack
                   .map((tech) => tech.toLowerCase())
                   .join(" ")}`}
                 key={index}
+                onClick={() => openModal(project)} // Open modal on click
               >
-                <div className="portfolio-col portfolio-hover-01">
+                <div className="portfolio-col">
                   <div className="portfolio-img">
-                    <a href={project.image.url}>
-                      <img src={project.image.url} title alt />
+                    <a>
+                      <img src={project.image.url} alt="" />
                     </a>
                     <div className="hover">
                       <div className="action-btn">
                         <a
-                          href="http://www.youtube.com/watch?v=0O2aH4XLbto"
-                          className="popup-video theme-color"
+                          href={project.githuburl}
+                          target="_blank"
+                          className="theme-color"
                         >
-                          <i className="fa fa-play" />
+                          <i className="fab fa-lg fa-github"></i>
                         </a>
                         <a
-                          className="lightbox-gallery theme-color"
-                          href={project.image.url}
-                          title="Lightbox gallery image title..."
+                          href={project.liveurl}
+                          target="_blank"
+                          className="theme-color"
                         >
-                          <i className="fas fa-expand" />
-                        </a>
-                        <a href={project.githuburl} className="theme-color">
                           <i className="fa fa-link" />
                         </a>
                       </div>{" "}
-                      {/* Video Btn */}
+                      {/* Action Btn */}
                     </div>{" "}
                     {/* Hover */}
                   </div>
                   <div className="portfolio-info">
                     <h5>{project.title}</h5>
-                    {project.techStack.slice(0, 4).map((tech, index) => (
-                      <span key={index}>{tech}</span>
+                    {project.techStack.map((tech, index) => (
+                      <span key={index}>{tech} </span>
                     ))}
-                    {project.techStack.length - 4 > 0 && (
-                      <span key="ellipsis">...</span>
-                    )}
                   </div>
                 </div>{" "}
-                {/* Portfolio */}
+                {/* Portfolio Col */}
               </li>
             ))}
           </ul>
         </div>
+        <ul className="pagination d-flex justify-content-center">
+          {Array.from({
+            length: Math.ceil(projects.length / projectsPerPage),
+          }).map((_, index) => (
+            <li key={index} className="page-item">
+              <button onClick={() => paginate(index + 1)} className="page-link">
+                {index + 1}
+              </button>
+            </li>
+          ))}
+        </ul>
       </div>
-      {/* 
-          ==========================
-            Testimonials
-          ==========================
-          */}
-      <Testimonials />
+      {showModal && (
+        <Modal selectedProject={selectedProject} closeModal={closeModal} />
+      )}
     </SectionContainer>
   );
 };
+
 export default Portfolio;
